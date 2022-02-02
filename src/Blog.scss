@@ -1,0 +1,10 @@
+.blog-page {
+    &__image {
+        width: 100%;
+        height: auto;
+
+        @media (min-width: 950px) {
+            max-width: 55%;
+        }
+    }
+}

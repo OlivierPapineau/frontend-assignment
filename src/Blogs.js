@@ -1,10 +1,32 @@
 import { Divider, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { getAllPosts } from "./services"
+import { BlogPost } from "./components"
 
 import "./Blogs.scss";
 
 function Blogs() {
     const [selectedFilter, setSelectedFilter] = useState("all");
+    const [loading, setLoading] = useState(true)
+    const [posts, setPosts] = useState([])
+
+    useEffect(() => {
+        getAllPosts().then(res => {
+            setPosts(res)
+        })
+    }, [])
+
+    useEffect(() => {
+        if (loading && posts.length) {
+            setLoading(false)
+        }
+    }, [posts])
+
+    const filteredPosts = useMemo(() => posts.length ? ({
+        all: posts,
+        author: posts.filter(post => post.authorName === "Damian Kastbauer"),
+        latest: posts.sort((a, b) => new Date(b.publishedDate) - new Date(a.publishedDate)),
+    }) : [], [selectedFilter, posts])
 
     return (<>
         <header className="blogs-header">
@@ -27,7 +49,12 @@ function Blogs() {
         </header>
         <Divider variant="fullWidth"></Divider>
         <section className="blogs">
-            Blogs go here!
+            
+            {loading ? (
+                <p>LOADING...</p>
+            ) : filteredPosts[selectedFilter]?.map(post => (
+                <BlogPost key={post.id} post={post} fitAll={selectedFilter === "all"} />
+            ))}
         </section>
     </>);
 }

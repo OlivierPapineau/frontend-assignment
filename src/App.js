@@ -1,6 +1,9 @@
 import { AppBar, Toolbar, Typography, Icon } from '@mui/material';
+import { BrowserRouter, Switch, Route } from "react-router-dom"
+import Blogs from "./Blogs"
+import Blog from "./Blog"
+
 import './App.scss';
-import Blogs from './Blogs';
 
 function App() {
   return (<>
@@ -13,7 +16,16 @@ function App() {
       </Toolbar>
     </AppBar>
     <main className="main">
-      <Blogs />
+      <BrowserRouter>
+        <Switch>
+          <Route exact path="/">
+            <Blogs />
+          </Route>
+          <Route path="/:id">
+            <Blog />
+          </Route>
+        </Switch>
+      </BrowserRouter>
     </main>
   </>);
 }
